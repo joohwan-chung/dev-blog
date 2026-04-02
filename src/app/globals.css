@@ -1,0 +1,426 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "katex/dist/katex.min.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.147 0.004 49.25);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.147 0.004 49.25);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.147 0.004 49.25);
+  --primary: oklch(0.216 0.006 56.043);
+  --primary-foreground: oklch(0.985 0.001 106.423);
+  --secondary: oklch(0.97 0.001 106.424);
+  --secondary-foreground: oklch(0.216 0.006 56.043);
+  --muted: oklch(0.97 0.001 106.424);
+  --muted-foreground: oklch(0.553 0.013 58.071);
+  --accent: oklch(0.97 0.001 106.424);
+  --accent-foreground: oklch(0.216 0.006 56.043);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.923 0.003 48.717);
+  --input: oklch(0.923 0.003 48.717);
+  --ring: oklch(0.709 0.01 56.259);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0.001 106.423);
+  --sidebar-foreground: oklch(0.147 0.004 49.25);
+  --sidebar-primary: oklch(0.216 0.006 56.043);
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
+  --sidebar-border: oklch(0.923 0.003 48.717);
+  --sidebar-ring: oklch(0.709 0.01 56.259);
+}
+
+.dark {
+  --background: oklch(0.147 0.004 49.25);
+  --foreground: oklch(0.985 0.001 106.423);
+  --card: oklch(0.216 0.006 56.043);
+  --card-foreground: oklch(0.985 0.001 106.423);
+  --popover: oklch(0.216 0.006 56.043);
+  --popover-foreground: oklch(0.985 0.001 106.423);
+  --primary: oklch(0.923 0.003 48.717);
+  --primary-foreground: oklch(0.216 0.006 56.043);
+  --secondary: oklch(0.268 0.007 34.298);
+  --secondary-foreground: oklch(0.985 0.001 106.423);
+  --muted: oklch(0.268 0.007 34.298);
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --accent: oklch(0.268 0.007 34.298);
+  --accent-foreground: oklch(0.985 0.001 106.423);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.553 0.013 58.071);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.216 0.006 56.043);
+  --sidebar-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-accent: oklch(0.268 0.007 34.298);
+  --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.553 0.013 58.071);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  
+  /* 개발자 블로그에 맞는 타이포그래피 */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-slate-900;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+  
+  p {
+    @apply text-slate-700 leading-relaxed;
+  }
+  
+  a {
+    @apply text-slate-600 hover:text-slate-900 transition-colors;
+  }
+  
+  /* 다크모드 타이포그래피 */
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-slate-100;
+  }
+  
+  .dark p {
+    @apply text-slate-200;
+  }
+  
+  .dark a {
+    @apply text-slate-300 hover:text-slate-100;
+  }
+}
+
+/* Notion 스타일 - 개발자 블로그에 맞게 개선 */
+.notion-content {
+  @apply text-slate-800 leading-relaxed;
+}
+
+.notion-content h1 {
+  @apply text-3xl font-bold text-slate-900 mb-6 mt-8 pb-3 border-b border-slate-200;
+}
+
+.notion-content h2 {
+  @apply text-2xl font-semibold text-slate-900 mb-4 mt-6;
+}
+
+.notion-content h3 {
+  @apply text-xl font-semibold text-slate-900 mb-3 mt-5;
+}
+
+.notion-content p {
+  @apply mb-4 text-slate-700 leading-relaxed text-base;
+}
+
+/* 목록 스타일 */
+.notion-content ul {
+  @apply mb-6 text-slate-700 list-none;
+}
+
+.notion-content ol {
+  @apply mb-6 text-slate-700 list-none;
+}
+
+.notion-content li {
+  @apply mb-2 text-slate-700 leading-relaxed relative pl-6;
+}
+
+/* 글머리 기호 목록 */
+.notion-content ul li::before {
+  content: "•";
+  @apply absolute left-0 text-slate-400 text-lg;
+}
+
+/* 번호 매기기 목록 */
+.notion-content ol li::before {
+  @apply absolute left-0 text-slate-400 font-mono;
+}
+
+.notion-content ol li:nth-child(1)::before { content: "1."; }
+.notion-content ol li:nth-child(2)::before { content: "2."; }
+.notion-content ol li:nth-child(3)::before { content: "3."; }
+.notion-content ol li:nth-child(4)::before { content: "4."; }
+.notion-content ol li:nth-child(5)::before { content: "5."; }
+.notion-content ol li:nth-child(6)::before { content: "6."; }
+.notion-content ol li:nth-child(7)::before { content: "7."; }
+.notion-content ol li:nth-child(8)::before { content: "8."; }
+.notion-content ol li:nth-child(9)::before { content: "9."; }
+.notion-content ol li:nth-child(10)::before { content: "10."; }
+
+.notion-content blockquote {
+  @apply border-l-4 border-slate-300 pl-6 my-6 italic text-slate-600 bg-slate-50 py-4 rounded-r-lg;
+}
+
+.notion-content code {
+  @apply bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono text-slate-800;
+}
+
+.notion-content pre {
+  @apply bg-slate-900 text-slate-100 rounded-lg overflow-hidden p-4;
+}
+
+.notion-content pre code {
+  @apply bg-transparent text-slate-100 p-0;
+}
+
+.notion-content img {
+  @apply rounded-lg border border-slate-200 max-w-full h-auto;
+}
+
+.notion-content a {
+  @apply text-blue-600 hover:text-blue-800 underline;
+}
+
+/* 노션 스타일 개선 */
+.notion-content .callout {
+  @apply my-6 p-4 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-3;
+}
+
+.notion-content .toggle {
+  @apply my-4;
+}
+
+.notion-content .toggle summary {
+  @apply cursor-pointer font-medium text-slate-900 mb-2 hover:text-slate-700;
+}
+
+.notion-content .toggle div {
+  @apply pl-4 text-slate-700;
+}
+
+.notion-content .table-of-contents {
+  @apply my-6 p-4 bg-slate-50 border border-slate-200 rounded-lg;
+}
+
+.notion-content .column-list {
+  @apply my-6 grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.notion-content .column {
+  @apply space-y-4;
+}
+
+/* 코드 블록 스타일링 */
+.notion-content pre {
+  @apply font-mono text-sm leading-relaxed;
+}
+
+/* 인라인 코드 스타일링 */
+.notion-content :not(pre) > code {
+  @apply bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+/* 테이블 스타일링 */
+.notion-content table {
+  @apply w-full border-collapse border border-slate-200 my-6;
+}
+
+.notion-content th,
+.notion-content td {
+  @apply border border-slate-200 px-4 py-2 text-left;
+}
+
+.notion-content th {
+  @apply bg-slate-50 font-semibold text-slate-900;
+}
+
+.notion-content td {
+  @apply text-slate-700;
+}
+
+/* 반응형 이미지 */
+.notion-content img {
+  @apply max-w-full h-auto mx-auto;
+}
+
+/* 링크 스타일 */
+.notion-content a {
+  @apply text-blue-600 hover:text-blue-800 underline decoration-blue-300 hover:decoration-blue-600 transition-all;
+}
+
+/* 다크모드 스타일 */
+.dark .notion-content {
+  @apply text-slate-200;
+}
+
+.dark .notion-content h1 {
+  @apply text-slate-100 border-slate-700;
+}
+
+.dark .notion-content h2 {
+  @apply text-slate-100;
+}
+
+.dark .notion-content h3 {
+  @apply text-slate-100;
+}
+
+.dark .notion-content p {
+  @apply text-slate-200;
+}
+
+.dark .notion-content ul {
+  @apply text-slate-200;
+}
+
+.dark .notion-content ol {
+  @apply text-slate-200;
+}
+
+.dark .notion-content li {
+  @apply text-slate-200;
+}
+
+.dark .notion-content ul li::before {
+  @apply text-slate-500;
+}
+
+.dark .notion-content ol li::before {
+  @apply text-slate-500;
+}
+
+.dark .notion-content blockquote {
+  @apply border-slate-600 text-slate-300 bg-slate-800;
+}
+
+.dark .notion-content code {
+  @apply bg-slate-700 text-slate-200;
+}
+
+.dark .notion-content pre {
+  @apply bg-slate-800 text-slate-200;
+}
+
+.dark .notion-content pre code {
+  @apply text-slate-200;
+}
+
+.dark .notion-content img {
+  @apply border-slate-700;
+}
+
+.dark .notion-content a {
+  @apply text-blue-400 hover:text-blue-300 decoration-blue-500 hover:decoration-blue-400;
+}
+
+.dark .notion-content .callout {
+  @apply bg-slate-800 border-slate-700;
+}
+
+.dark .notion-content .toggle summary {
+  @apply text-slate-100 hover:text-slate-300;
+}
+
+.dark .notion-content .toggle div {
+  @apply text-slate-200;
+}
+
+.dark .notion-content .table-of-contents {
+  @apply bg-slate-800 border-slate-700;
+}
+
+.dark .notion-content :not(pre) > code {
+  @apply bg-slate-700 text-slate-200;
+}
+
+.dark .notion-content table {
+  @apply border-slate-700;
+}
+
+.dark .notion-content th {
+  @apply bg-slate-800 text-slate-100;
+}
+
+.dark .notion-content td {
+  @apply text-slate-200;
+}
+
+/* 인쇄 시 비표시 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: #111;
+  }
+
+  .prose,
+  .notion-content {
+    max-width: 100%;
+  }
+
+  a[href]::after {
+    content: none;
+  }
+}

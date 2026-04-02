@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# 어드민 페이지 차단
+Disallow: /admin/
+
+# API 경로도 차단 (선택사항)
+Disallow: /api/admin/
+
+# 테스트 페이지들도 차단
+Disallow: /test-events/
+Disallow: /api/debug/
+Disallow: /api/test-event/
