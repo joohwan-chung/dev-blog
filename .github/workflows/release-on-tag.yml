@@ -2,6 +2,7 @@ name: Release on tag
 
 # 태그 push → release 환경 승인 후 GitHub Release 생성
 # 외부 actions(uses) 미사용 → Actions allowlist에 서드파티 액션 등록 불필요
+# generate_release_notes는 API로 처리 (로컬 .git 불필요)
 
 on:
   push:
@@ -25,8 +26,14 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          args=(release create "$TAG" --title "$TAG" --generate-notes)
+          api_args=(
+            --method POST
+            "repos/${GITHUB_REPOSITORY}/releases"
+            -f "tag_name=${TAG}"
+            -f "name=${TAG}"
+            -F "generate_release_notes=true"
+          )
           if [[ "$TAG" == *-* ]]; then
-            args+=(--prerelease)
+            api_args+=(-F "prerelease=true")
           fi
-          gh "${args[@]}"
+          gh api "${api_args[@]}"
