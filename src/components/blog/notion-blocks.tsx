@@ -3,6 +3,7 @@
 import { NotionBlock, NotionRichText } from '@/types/notion';
 import Image from 'next/image';
 import { useScrollSpyContext } from '@/lib/scroll-spy-context';
+import { MermaidDiagram } from '@/components/blog/mermaid-diagram';
 
 interface NotionBlocksProps {
   blocks: NotionBlock[];
@@ -12,6 +13,24 @@ function getPlainText(richText: NotionRichText[] | undefined): string {
   if (!richText?.length) return '';
   return richText.map((r) => r.plain_text).join('').trim();
 }
+
+function normalizeRichText(richText: NotionRichText[]): NotionRichText[] {
+  return richText.map((text) => ({
+    ...text,
+    annotations: {
+      bold: text.annotations?.bold ?? false,
+      italic: text.annotations?.italic ?? false,
+      strikethrough: text.annotations?.strikethrough ?? false,
+      underline: text.annotations?.underline ?? false,
+      code: text.annotations?.code ?? false,
+    },
+  }));
+}
+
+const cellClassName =
+  'p-3 border border-stone-200 dark:border-slate-700 text-stone-700 dark:text-slate-200';
+const headerCellClassName =
+  'p-3 border border-stone-200 dark:border-slate-700 text-stone-900 dark:text-slate-100 font-semibold bg-stone-50 dark:bg-slate-800';
 
 function slugifyForId(text: string): string {
   const s = text.replace(/\s+/g, '-').replace(/[^\w\uAC00-\uD7A3-]/g, '');
@@ -167,8 +186,14 @@ export function NotionBlocks({ blocks }: NotionBlocksProps) {
         }
         return null;
 
-      case 'code':
-        const language = block.content.language || 'text';
+      case 'code': {
+        const language = (block.content.language || 'text').toLowerCase();
+        const codeSource = getPlainText(block.content.rich_text);
+
+        if (language === 'mermaid') {
+          return <MermaidDiagram key={block.id} source={codeSource} />;
+        }
+
         return (
           <div key={block.id} className="my-6">
             <div className="bg-stone-900 dark:bg-slate-800 text-stone-100 dark:text-slate-200 rounded-lg overflow-hidden border border-stone-700 dark:border-slate-600">
@@ -187,6 +212,7 @@ export function NotionBlocks({ blocks }: NotionBlocksProps) {
             </div>
           </div>
         );
+      }
 
       case 'quote':
         return (
@@ -260,24 +286,57 @@ export function NotionBlocks({ blocks }: NotionBlocksProps) {
           </div>
         );
 
-      case 'table':
+      case 'table': {
+        const rows = (block.content.children ?? []).filter((row) => row.type === 'table_row');
+        const hasColumnHeader = block.content.has_column_header ?? false;
+        const hasRowHeader = block.content.has_row_header ?? false;
+        const headerRow = hasColumnHeader ? rows[0] : null;
+        const bodyRows = hasColumnHeader ? rows.slice(1) : rows;
+
+        const renderTableCells = (
+          row: NotionBlock,
+          rowIndex: number,
+          asHeader: boolean
+        ) =>
+          (row.content.cells ?? []).map((cellRichText, cellIndex) => {
+            const isRowHeaderCell = hasRowHeader && cellIndex === 0;
+            const useTh = asHeader || isRowHeaderCell;
+            const CellTag = useTh ? 'th' : 'td';
+            const scope = asHeader ? 'col' : isRowHeaderCell ? 'row' : undefined;
+
+            return (
+              <CellTag
+                key={`${row.id}-${cellIndex}`}
+                scope={scope}
+                className={useTh ? headerCellClassName : cellClassName}
+              >
+                {renderTextWithAnnotations(normalizeRichText(cellRichText))}
+              </CellTag>
+            );
+          });
+
         return (
           <div key={block.id} className="my-6 overflow-x-auto scrollbar-thin scrollbar-thumb-stone-600 dark:scrollbar-thumb-slate-500 scrollbar-track-transparent">
             <table className="w-full min-w-max border-collapse border border-stone-200 dark:border-slate-700">
+              {headerRow && (
+                <thead>
+                  <tr key={headerRow.id}>{renderTableCells(headerRow, 0, true)}</tr>
+                </thead>
+              )}
               <tbody>
-                {block.content.children?.map((row: NotionBlock, rowIndex: number) => (
-                  <tr key={row.id || rowIndex} className="border-b border-stone-200 dark:border-slate-700">
-                    {row.content.children?.map((cell: NotionBlock, cellIndex: number) => (
-                      <td key={cell.id || cellIndex} className="p-3 border-r border-stone-200 dark:border-slate-700 text-stone-700 dark:text-slate-200 whitespace-nowrap">
-                        {renderTextWithAnnotations(cell.content.rich_text!)}
-                      </td>
-                    ))}
+                {bodyRows.map((row, rowIndex) => (
+                  <tr key={row.id || rowIndex}>
+                    {renderTableCells(row, rowIndex, false)}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         );
+      }
+
+      case 'table_row':
+        return null;
 
       default:
         // 알 수 없는 블록 타입은 개발자 도구에서 확인할 수 있도록 표시

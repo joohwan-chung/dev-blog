@@ -158,20 +158,52 @@ export function getRelatedPosts(
     .map(({ _commonTagCount: _, ...p }) => p);
 }
 
+const MAX_BLOCK_DEPTH = 15;
+
+interface NotionApiBlock {
+  id: string;
+  type: string;
+  has_children?: boolean;
+  [key: string]: unknown;
+}
+
+async function fetchBlockChildren(blockId: string): Promise<NotionApiBlock[]> {
+  const results: NotionApiBlock[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const response = await notion.blocks.children.list({
+      block_id: blockId,
+      start_cursor: cursor,
+    });
+    results.push(...(response.results as NotionApiBlock[]));
+    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+  } while (cursor);
+
+  return results;
+}
+
+async function mapNotionBlock(block: NotionApiBlock, depth: number): Promise<NotionBlock> {
+  const content = (block[block.type] ?? {}) as NotionBlock['content'];
+
+  if (block.has_children && depth < MAX_BLOCK_DEPTH) {
+    const childBlocks = await fetchBlockChildren(block.id);
+    content.children = await Promise.all(
+      childBlocks.map((child) => mapNotionBlock(child, depth + 1))
+    );
+  }
+
+  return {
+    type: block.type,
+    content,
+    id: block.id,
+  };
+}
+
 export async function getPageContent(pageId: string): Promise<NotionBlock[]> {
   try {
-    const response = await notion.blocks.children.list({
-      block_id: pageId,
-    });
-
-    return response.results.map((block: unknown) => {
-      const blockObj = block as { type: string;[key: string]: unknown; id: string };
-      return {
-        type: blockObj.type,
-        content: blockObj[blockObj.type] as NotionBlock['content'],
-        id: blockObj.id,
-      };
-    });
+    const topLevelBlocks = await fetchBlockChildren(pageId);
+    return Promise.all(topLevelBlocks.map((block) => mapNotionBlock(block, 0)));
   } catch (error) {
     console.error('Error fetching page content:', error);
     return [];

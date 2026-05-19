@@ -27,6 +27,12 @@ export interface NotionBlockContent {
   language?: string;
   icon?: { emoji: string };
   children?: NotionBlock[];
+  /** table_row: 셀별 rich_text 배열 */
+  cells?: NotionRichText[][];
+  /** table */
+  table_width?: number;
+  has_column_header?: boolean;
+  has_row_header?: boolean;
 }
 
 export interface NotionRichText {
