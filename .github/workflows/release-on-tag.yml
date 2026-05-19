@@ -1,7 +1,7 @@
 name: Release on tag
 
-# 태그 push 시 워크플로가 시작되고, release 환경 승인 후 GitHub Release가 생성됩니다.
-# 저장소 설정(Actions allowlist, Environment 승인자)은 README가 아닌 GitHub UI에서 구성합니다.
+# 태그 push → release 환경 승인 후 GitHub Release 생성
+# 외부 actions(uses) 미사용 → Actions allowlist에 서드파티 액션 등록 불필요
 
 on:
   push:
@@ -19,18 +19,14 @@ jobs:
       group: release-${{ github.ref_name }}
       cancel-in-progress: false
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          generate_release_notes: true
-          draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          args=(release create "$TAG" --title "$TAG" --generate-notes)
+          if [[ "$TAG" == *-* ]]; then
+            args+=(--prerelease)
+          fi
+          gh "${args[@]}"
